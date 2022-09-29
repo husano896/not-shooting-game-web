@@ -1,0 +1,178 @@
+<head>
+	<style>
+		body {
+			overflow: hidden;
+		}
+
+		.camera {
+			/* perspective越大, 東西越近 = zoom-top;
+			 perspective: 128px;
+			*/
+			perspective-origin: bottom;
+			width: 100%;
+			height: 100%;
+		}
+
+		.lane {
+			width: 60vh;
+			height: 240vh;
+			position: absolute;
+			transform-origin: 22.5vh bottom;
+			transform-style: preserve-3d;
+			/*rotateX: zoom-top
+			 rotateY: 左右加寬/變窄
+			 rotateZ: 旋鈕造成的傾斜
+			 translateX: zoom-side, 越大越往右;
+			*/
+			transform: rotateX(5deg) rotateY(0deg) rotateZ(0deg);
+			bottom: 0;
+			left: calc(50% - 30vh);
+			display: flex;
+			flex-direction: row;
+			overflow: hidden;
+		}
+
+		.lane-L {
+			background: linear-gradient(to right, #55c, #116, #aaa);
+		}
+		.lane-A,
+		.lane-B,
+		.lane-C,
+		.lane-D {
+			background: linear-gradient(to right, black, #336, black);
+		}
+
+		.lane-R {
+			background: linear-gradient(to right, #aaa, #611, #c55);
+		}
+
+		.laser-cursor {
+			position: absolute;
+			left: 0;
+			font-size: 15vh;
+			bottom: 0;
+		}
+
+		.laser-cursor-l {
+			color: #50BDE8;
+		}
+
+		.laser-cursor-r {
+			color: #ED5B5E;
+		}
+
+		.judge-text {
+			position: absolute;
+			word-break: keep-all;
+			font-size: 2.5vh;
+			bottom: 0;
+			color: yellow;
+			pointer-events: none;
+		}
+
+		.notes,
+		.bt,
+		.fx,
+		.laser {
+			position: absolute;
+			display: flex;
+			flex-direction: row;
+			width: 100%;
+			height: 100%;
+		}
+
+		.bt-chip {
+			background-color: white;
+			height: 2vh;
+			width: 100%;
+			border: 2px cyan solid;
+			position: absolute;
+			box-sizing: border-box;
+		}
+
+		.fx-chip {
+			background-color: orange;
+			height: 2vh;
+			width: 100%;
+			border: 2px brown solid;
+			position: absolute;
+			box-sizing: border-box;
+		}
+
+		.bt-a,
+		.bt-b,
+		.bt-c,
+		.bt-d,
+		.fx-l,
+		.fx-r {
+			contain: layout;
+		}
+
+		.critical-bar {
+			width: 100%;
+			height: 5vh;
+			bottom: 5vh;
+			box-sizing: border-box;
+			border: red 4px solid;
+			background-color: rgba(255,127,39,0.5);
+			position: absolute;
+		}
+	</style>
+</head>
+
+<body>
+	<div class="camera">
+		<div class="lane game-lane">
+			<div class="lane-L" style="width: 10%;"></div>
+			<div class="lane-A" style="width: 20%;"></div>
+			<div class="lane-B" style="width: 20%;"></div>
+			<div class="lane-C" style="width: 20%;"></div>
+			<div class="lane-D" style="width: 20%;">
+				<span class="judge-text">CRITICAL</span>
+			</div>
+			<div class="lane-R" style="width: 10%;"></div>
+			<div class="laser-cursor laser-cursor-l">
+				↑
+			</div>
+			<div class="laser-cursor laser-cursor-r">
+				↑
+			</div>
+			<div class="notes">
+				<!-- FX -->
+				<div class="fx">
+					<div style="width: 10%;"></div>
+					<div class="fx-l" style="width: 40%;">
+
+					</div>
+					<div class="fx-r" style="width: 40%;">
+					</div>
+					<div style="width: 10%;"></div>
+				</div>
+				<!-- BT -->
+				<div class="bt">
+					<div style="width: 10%;"></div>
+					<div class="bt-a" style="width: 20%;">
+					</div>
+					<div class="bt-b" style="width: 20%;">
+
+					</div>
+					<div class="bt-c" style="width: 20%;">
+
+					</div>
+					<div class="bt-d" style="width: 20%;">
+
+					</div>
+					<div style="width: 10%;"></div>
+				</div>
+
+
+				<!-- Laser -->
+				<div class="laser">
+				</div>
+			</div>
+		</div>
+
+		<div class="critical-bar"></div>
+	</div>
+	<script src="script.js"></script>
+</body>

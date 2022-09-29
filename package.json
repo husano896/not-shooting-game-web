@@ -1,0 +1,19 @@
+{
+  "name": "not-shooting-game-web",
+  "version": "1.0.0",
+  "description": "",
+  "main": "script.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/husano896/not-shooting-game-web.git"
+  },
+  "author": "xFly",
+  "license": "WTFPL",
+  "bugs": {
+    "url": "https://github.com/husano896/not-shooting-game-web/issues"
+  },
+  "homepage": "https://github.com/husano896/not-shooting-game-web#readme"
+}
