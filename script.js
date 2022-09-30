@@ -45,6 +45,44 @@ let lastUpdate = 0;
 
 // 音樂所在位置ms
 let musicPos = 0;
+
+function getSlamHeight() {
+	return 64;
+}
+
+// 測試用旋鈕Note
+const test_laserNotes = [
+	{ time: 0, pos: 0.0, isSlam: true },
+	{ time: 1000, pos: 1.0 },
+	{ time: 2000, pos: 0.0 },
+	{ time: 3000, pos: 1.0, isSlam: true },
+	{ time: 4000, pos: 0.0 }
+]
+
+const els = test_laserNotes.map((note, index) => {
+	const el = document.createElement('div');
+
+	const nextNote = test_laserNotes[index + 1];
+	// 如果是直角時
+	if (note.isSlam || nextNote?.time === note.time) {
+
+		const timeDiff = nextNote.time - note.time;
+
+		const height = getSlamHeight()
+		// 直角寬度根據前後旋鈕Note所在位置判定
+		const width = (note.pos - nextNote.pos) * 100;
+
+		el.style.width = `${width}%`;
+		el.style.height = `${height}px`;
+	} if (nextNote) {
+		// TODO: 移動變化量 / 時間變化量 * 高度補正
+		const height = nextNote.time - note.time;
+		const deg =  (nextNote.pos - note.pos) / (nextNote.time - note.time);
+
+	}
+});
+
+
 class Note {
 	constructor(type) {
 		this.el = document.createElement('div')
@@ -175,53 +213,56 @@ function judgeKey(key) {
 			break;
 	}
 }
+
+function onKeyDown(ev) {
+	ev.preventDefault();
+	switch (ev.key) {
+		case 'ArrowUp':
+			rotateX -= 0.1;
+			break;
+		case 'ArrowDown':
+			rotateX += 0.1;
+			break;
+		case 'ArrowLeft':
+			rotateZ -= 1;
+			break;
+		case 'ArrowRight':
+			rotateZ += 1;
+			break;
+		case keyA:
+		case keyB:
+		case keyC:
+		case keyD:
+		case keyL:
+		case keyR:
+			if (keypressed[ev.key]) {
+				break;
+			}
+			judgeKey(ev.key);
+			break;
+	}
+
+	cameraEl.style.perspective = `${perspective}px`;
+	gameLane.style.transform = `rotateX(${rotateX}deg) rotateY(0deg) rotateZ(${rotateZ}deg)`;
+	keypressed[ev.key] = true;
+}
+
+function onKeyUp(ev) {
+	ev.preventDefault();
+	keypressed[ev.key] = false;
+}
+
+function onPointerMove(ev) {
+	ev.preventDefault();
+	laserLVal = Math.max(0, Math.min(laserLVal + ev.movementX, 1000));
+	laserRVal = Math.max(0, Math.min(laserRVal + ev.movementY, 1000));
+	// cursorL.style.left = `calc(${laserLVal / 10}% - 7.5vh)`
+	// cursorR.style.left = `calc(${laserRVal / 10}% - 7.5vh)`
+}
 function init() {
-	document.addEventListener('keydown', (ev) => {
-		// console.log(ev);
-		ev.preventDefault();
-		switch (ev.key) {
-			case 'ArrowUp':
-				rotateX -= 0.1;
-				break;
-			case 'ArrowDown':
-				rotateX += 0.1;
-				break;
-			case 'ArrowLeft':
-				rotateZ -= 1;
-				break;
-			case 'ArrowRight':
-				rotateZ += 1;
-				break;
-			case keyA:
-			case keyB:
-			case keyC:
-			case keyD:
-			case keyL:
-			case keyR:
-				if (keypressed[ev.key]) {
-					break;
-				}
-				judgeKey(ev.key);
-				break;
-		}
-
-
-		cameraEl.style.perspective = `${perspective}px`;
-		gameLane.style.transform = `rotateX(${rotateX}deg) rotateY(0deg) rotateZ(${rotateZ}deg)`;
-		keypressed[ev.key] = true;
-
-	});
-	document.addEventListener('keyup', (ev) => {
-		ev.preventDefault();
-		keypressed[ev.key] = false;
-	});
-	document.addEventListener('pointermove', (ev) => {
-		ev.preventDefault();
-		laserLVal = Math.max(0, Math.min(laserLVal + ev.movementX, 1000));
-		laserRVal = Math.max(0, Math.min(laserRVal + ev.movementY, 1000));
-		// cursorL.style.left = `calc(${laserLVal / 10}% - 7.5vh)`
-		// cursorR.style.left = `calc(${laserRVal / 10}% - 7.5vh)`
-	});
+	document.addEventListener('keydown', onKeyDown);
+	document.addEventListener('keyup', onKeyUp);
+	document.addEventListener('pointermove', onPointerMove);
 	update();
 	updateCamera();
 }
