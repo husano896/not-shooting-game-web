@@ -1,60 +1,54 @@
 <head>
-	 <link rel="stylesheet" href="style.css">
+	<title>low cost not shooting game sim</title>
+	<link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 	<div class="camera">
-		<div class="lane game-lane">
-			<div class="lane-L" style="width: 10%;"></div>
-			<div class="lane-A" style="width: 20%;"></div>
-			<div class="lane-B" style="width: 20%;"></div>
-			<div class="lane-C" style="width: 20%;"></div>
-			<div class="lane-D" style="width: 20%;">
-				<span class="judge-text">CRITICAL</span>
+		<div class="lane game-lane lane-size">
+			<!-- Laser -->
+			<!-- 出軌時寬度視為兩倍, width: 200%, left: -50% -->
+			<div class="lane-L" style="width: 20%;"></div>
+			<div class="lane-Left fx-l" style="width: 40%;">
+				<div class="lane-A bt-a" style="width: 50%;"> </div>
+				<div class="lane-B bt-b" style="width: 50%;"> </div>
 			</div>
-			<div class="lane-R" style="width: 10%;"></div>
-			<div class="laser-cursor laser-cursor-l">
-				↑
-			</div>
-			<div class="laser-cursor laser-cursor-r">
-				↑
-			</div>
-			<div class="notes">
-				<!-- FX -->
-				<div class="fx">
-					<div style="width: 10%;"></div>
-					<div class="fx-l" style="width: 40%;">
-
-					</div>
-					<div class="fx-r" style="width: 40%;">
-					</div>
-					<div style="width: 10%;"></div>
+			<div class="lane-Right fx-r" style="width: 40%;">
+				<div class="lane-C bt-c" style="width: 50%;"></div>
+				<div class="lane-D bt-d" style="width: 50%;"></div>
+				<div class="circle FX">
+					<div class="circleX"></div>
+					<div class="circleY"></div>
 				</div>
-				<!-- BT -->
-				<div class="bt">
-					<div style="width: 10%;"></div>
-					<div class="bt-a" style="width: 20%;">
-					</div>
-					<div class="bt-b" style="width: 20%;">
+			</div>
+			<div class="lane-R" style="width: 20%;"></div>
+			<div class="laser">
+				<div class="laser-object-node" style="transform: skewX(-45deg); left: 0;bottom: 0;"></div>
+				<div class="laser-object-node" style="transform: skewX(45deg); left: 10vh; bottom: 10vh;"></div>
+			</div>
 
-					</div>
-					<div class="bt-c" style="width: 20%;">
-
-					</div>
-					<div class="bt-d" style="width: 20%;">
-
-					</div>
-					<div style="width: 10%;"></div>
+			<div class="laser-cursor laser-cursor-l">↑
+				<div class="circle LaserL">
+					<div class="circleX"></div>
+					<div class="circleY"></div>
 				</div>
-
-
-				<!-- Laser -->
-				<div class="laser">
+			</div>
+			<div class="laser-cursor laser-cursor-r">↑
+				<div class="circle LaserR">
+					<div class="circleX"></div>
+					<div class="circleY"></div>
 				</div>
 			</div>
 		</div>
-
-		<div class="critical-bar"></div>
+		<div class="ui">
+			<div class="critical-bar"></div>
+		</div>
+	</div>
+	<div class="tools">
+		<label>rotateX</label>
+		<input type="range" min="0" max="90" value="10" oninput="rotateX = Number(this.value);updateCamera()">
+		<label>perspective</label>
+		<input type="range" min="0" max="256" value="128" oninput="perspective = Number(this.value);updateCamera()">
 	</div>
 	<script src="script.js"></script>
 </body>

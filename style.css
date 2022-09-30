@@ -1,72 +1,101 @@
+:root {
+	--game-width: 90%;
+	--game-height: 90%;
+
+	--lane-width: 54vh;
+	--lane-height: 96vh;
+
+	--zIndex-lane: 0;
+	--zIndex-judge: 1;
+	--zIndex-FX: 2;
+	--zIndex-BT: 3;
+	--zIndex-Laser: 4;
+	--zIndex-judgeText: 5;
+	
+	--camera-origin: center;
+}
+
 body {
 	overflow: hidden;
+	margin: 0;
+	font-family: monospace;
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
 }
 
 .camera {
-	/* perspective越大, 東西越近 = zoom-top;
+	/* perspective越小, zoom-bottom 越大 zoom-top越小;
 			 perspective: 128px;
 			*/
-	perspective-origin: bottom;
-	width: 100%;
-	height: 100%;
+	perspective-origin: var(--camera-origin);
+	width: var(--game-width);
+	height: var(--game-height);
+	position: absolute;
+}
+
+.lane-size {
+	left: calc(50% - var(--lane-width) / 2);
+	width: var(--lane-width);
+	height: var(--lane-height);
+	top: 0;
+	position: absolute;
 }
 
 .lane {
-	width: 60vh;
-	height: 240vh;
 	position: absolute;
-	transform-origin: 22.5vh bottom;
+	/* y影響整體縮放大小*/
+	transform-origin: center bottom;
+	/* 使軌道受3D影響*/
 	transform-style: preserve-3d;
 	/*rotateX: zoom-top
 			 rotateY: 左右加寬/變窄
 			 rotateZ: 旋鈕造成的傾斜
 			 translateX: zoom-side, 越大越往右;
 			*/
-	transform: rotateX(5deg) rotateY(0deg) rotateZ(0deg);
-	bottom: 0;
-	left: calc(50% - 30vh);
+	/* rotateX越大, zoom-bottom越大 zoom-top越小*/
 	display: flex;
 	flex-direction: row;
-	overflow: hidden;
 }
 
 .lane-L {
-	background: linear-gradient(to right, #55c, #116, #aaa);
+	background: linear-gradient(to right, transparent 50%, #55c, #116, #aaa);
+	height: 100%;
 }
 
 .lane-A,
 .lane-B,
 .lane-C,
 .lane-D {
-	background: linear-gradient(to right, black, #336, black);
+	background: linear-gradient(to right, black, #224, black);
+	height: 100%;
+}
+
+.lane-Left, .lane-Right {
+	display: flex;
+	flex-direction: row;
 }
 
 .lane-R {
-	background: linear-gradient(to right, #aaa, #611, #c55);
+	background: linear-gradient(to right, #aaa, #611, #c55, transparent 50%);
+	height: 100%;
 }
 
 .laser-cursor {
 	position: absolute;
 	left: 0;
 	font-size: 15vh;
-	bottom: 0;
+	bottom: -7.5vh;
 }
 
 .laser-cursor-l {
 	color: #50BDE8;
+	z-index: var(--zIndex-Laser);
 }
 
 .laser-cursor-r {
 	color: #ED5B5E;
-}
-
-.judge-text {
-	position: absolute;
-	word-break: keep-all;
-	font-size: 2.5vh;
-	bottom: 0;
-	color: yellow;
-	pointer-events: none;
+	z-index: var(--zIndex-Laser);
 }
 
 .notes,
@@ -87,6 +116,7 @@ body {
 	border: 2px cyan solid;
 	position: absolute;
 	box-sizing: border-box;
+	z-index: val(--zIndex-BT);
 }
 
 .fx-chip {
@@ -96,6 +126,7 @@ body {
 	border: 2px brown solid;
 	position: absolute;
 	box-sizing: border-box;
+	z-index: val(--zIndex-FX);
 }
 
 .bt-a,
@@ -110,9 +141,270 @@ body {
 .critical-bar {
 	width: 100%;
 	height: 5vh;
-	bottom: 5vh;
+	bottom: 0;
 	box-sizing: border-box;
 	border: red 4px solid;
 	background-color: rgba(255, 127, 39, 0.5);
 	position: absolute;
+	left: 0;
+}
+
+
+.judge-text {
+	animation-duration: 1s;
+	-webkit-animation-duration: 1s;
+	animation-timing-function: ease-out;
+	-webkit-animation-timing-function: ease-out;
+	position: absolute;
+	word-break: keep-all;
+	font-size: 2.5vh;
+	bottom: 5vh;
+	margin: auto;
+	width: 100%;
+	pointer-events: none;
+	text-align: center;
+	z-index: var(--zIndex-judgeText);
+}
+
+.judge-text.critical {
+	-webkit-animation-name: slideOutUp;
+	animation-name: slideOutUp;
+
+	color: yellow;
+	text-shadow: yellowgreen 0px 1px;
+}
+
+.judge-text.near {
+	-webkit-animation-name: distance;
+	animation-name: distance;
+	color: cyan;
+	text-shadow: white 0px 1px;
+	transform-origin: center;
+}
+
+.judge-text.error {
+	-webkit-animation-name: blink;
+	animation-name: blink;
+	animation-timing-function: linear;
+	-webkit-animation-timing-function: linear;
+	color: orange;
+	text-shadow: red 0px 1px;
+}
+
+
+.lane-judge {
+	animation-duration: 0.25s;
+	-webkit-animation-duration: 0.25s;
+	animation-timing-function: cubic-bezier(0.075, 0.82, 0.165, 1);
+	-webkit-animation-timing-function: cubic-bezier(0.075, 0.82, 0.165, 1);
+	animation-delay: 0;
+	-webkit-animation-delay: 0;
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	z-index: var(--zIndex-judge);
+}
+
+.lane-judge.critical {
+	-webkit-animation-name: lane-critical;
+	animation-name: lane-critical;
+}
+
+.lane-judge.near {
+	-webkit-animation-name: lane-near;
+	animation-name: lane-near;
+}
+
+.lane-judge.empty {
+	-webkit-animation-name: lane-empty;
+	animation-name: lane-empty;
+}
+
+.laser-cursor .circle {
+	display: '';
+}
+.laser-cursor[state="miss"] .circle {
+	display: none;
+}
+
+.circle {
+	/* (A) SAME WIDTH & HEIGHT - SQUARE */
+	width: 100%;
+	height: auto;
+	aspect-ratio: 1;
+	bottom: 0;
+
+	position: absolute;
+	/* (B) 50% RADIUS = CIRCLE */
+	z-index: var(--zIndex-Laser);
+}
+
+.circleX {
+	-webkit-animation-name: rotateX;
+	animation-name: rotateX;
+}
+
+.circleY {
+	/* (A) SAME WIDTH & HEIGHT - SQUARE */
+	-webkit-animation-name: rotateY;
+	animation-name: rotateY;
+}
+
+.circle .circleX, .circle .circleY {
+	width: 100%;
+	height: 100%;
+	/* (B) 50% RADIUS = CIRCLE */
+	border-radius: 50%;
+
+	position: absolute;
+	/* (C) BACKGROUND COLOR */
+	box-sizing: border-box;
+	animation-duration: 2s;
+	-webkit-animation-duration: 2s;
+	animation-timing-function: linear;
+	-webkit-animation-timing-function: linear;
+	animation-iteration-count: infinite;
+	-webkit-animation-iteration-count: infinite;
+}
+
+.circle.FX .circleX, .circle.FX .circleY {
+	border: lemonchiffon 4px solid;
+}
+
+.circle.LaserL .circleX, .circle.LaserL .circleY {
+	border: lightskyblue 4px solid;
+}
+
+.circle.LaserR .circleX, .circle.LaserR .circleY {
+	border: palevioletred 4px solid;
+}
+
+.laser-object-node {
+	border: red 1px solid;
+	border-bottom: none;
+	border-top: none;
+	background-color: rgba(238, 138, 138, 0.5);
+	box-sizing: border-box;
+	height: 10vh;
+	width: 16.6%;
+	position: absolute;
+	transform-origin: center bottom;
+}
+
+
+
+.tools {
+	position: absolute;
+	left: 8px;
+	top: 8px;
+}
+
+.ui {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+}
+
+@keyframes slideOutUp {
+	0% {
+		opacity: 1;
+		-webkit-transform: translateZ(0);
+		transform: translateZ(0)
+	}
+
+	to {
+		opacity: 0;
+		-webkit-transform: translate3d(0, -25%, 0);
+		transform: translate3d(0, -25%, 0)
+	}
+}
+
+@keyframes distance {
+	0% {
+		opacity: 1;
+		transform: scaleX(100%) scaleY(100%)
+	}
+
+	to {
+		opacity: 0;
+		transform: scaleX(400%) scaleY(50%)
+	}
+}
+
+@keyframes blink {
+	0% {
+		opacity: 1
+	}
+
+	20% {
+		opacity: 0.5
+	}
+
+	40% {
+		opacity: 1
+	}
+
+	60% {
+		opacity: 0.5
+	}
+
+	80% {
+		opacity: 1;
+	}
+
+	to {
+		opacity: 0;
+	}
+}
+
+@keyframes lane-critical {
+	0% {
+		background: rgba(240, 227, 0, 0.5);
+	}
+
+	to {
+		background: none;
+	}
+}
+
+
+@keyframes lane-near {
+	0% {
+		background: rgba(238, 138, 248, 0.5);
+	}
+
+	to {
+		background: none;
+	}
+}
+
+@keyframes lane-empty {
+	0% {
+		background: none;
+	}
+
+	to {
+		background: rgba(50, 130, 246, 0.5);
+	}
+}
+
+@keyframes rotateX {
+	0% {
+		transform: rotateX(0);
+	}
+
+	to {
+		transform: rotateX(360deg);
+	}
+}
+
+
+@keyframes rotateY {
+	0% {
+		transform: rotateY(0);
+	}
+
+	to {
+		transform: rotateY(360deg);
+	}
 }
