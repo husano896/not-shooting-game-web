@@ -21,21 +21,21 @@ const audioRes = {
 	tick1: new Audio('audio/tick1.mp3'),
 	tick2: new Audio('audio/tick2.mp3')
 }
-let keyA = 'q';
-let keyB = 'w';
-let keyC = 'o';
-let keyD = 'p';
-let keyL = 'z';
-let keyR = '.';
+let keyA = 'a';
+let keyB = 'b';
+let keyC = 'c';
+let keyD = 'd';
+let keyL = 'j';
+let keyR = 'i';
 let keyVolLL = '1';
 let keyVolLR = '2';
 let keyVolRL = '9';
 let keyVolRR = '0';
 /* perspective越小, zoom-bottom 越大 zoom-top越小; */
-let perspective = 128;
+let perspective = 256;
 
 /* rotateX越大, zoom-bottom越大 zoom-top越小 */
-let rotateX = 30;
+let rotateX = 45;
 let rotateZ = 0;
 
 let notes = [];
@@ -51,12 +51,28 @@ function getSlamHeight() {
 }
 
 // 測試用旋鈕Note
-const test_laserNotes = [
-	{ time: 0, pos: 0.0, isSlam: true },
-	{ time: 1000, pos: 1.0 },
-	{ time: 2000, pos: 0.0 },
-	{ time: 3000, pos: 1.0, isSlam: true },
-	{ time: 4000, pos: 0.0 }
+const test_laserNotes = [{
+		time: 0,
+		pos: 0.0,
+		isSlam: true
+	},
+	{
+		time: 1000,
+		pos: 1.0
+	},
+	{
+		time: 2000,
+		pos: 0.0
+	},
+	{
+		time: 3000,
+		pos: 1.0,
+		isSlam: true
+	},
+	{
+		time: 4000,
+		pos: 0.0
+	}
 ]
 
 const els = test_laserNotes.map((note, index) => {
@@ -74,10 +90,11 @@ const els = test_laserNotes.map((note, index) => {
 
 		el.style.width = `${width}%`;
 		el.style.height = `${height}px`;
-	} if (nextNote) {
+	}
+	if (nextNote) {
 		// TODO: 移動變化量 / 時間變化量 * 高度補正
 		const height = nextNote.time - note.time;
-		const deg =  (nextNote.pos - note.pos) / (nextNote.time - note.time);
+		const deg = (nextNote.pos - note.pos) / (nextNote.time - note.time);
 
 	}
 });
@@ -127,6 +144,7 @@ class Note {
 		}
 	}
 }
+
 function update(delta) {
 	notes.forEach(note => note.update(delta - lastUpdate));
 	notes = notes.filter(note => note.el);
@@ -172,42 +190,60 @@ function judgeKey(key) {
 		case keyA:
 			laneBTA.appendChild(judgeEl);
 			laneBTA.appendChild(judgeTextEl);
-			setTimeout(() => { laneBTA.removeChild(judgeEl); laneBTA.removeChild(judgeTextEl); }, 500);
+			setTimeout(() => {
+				laneBTA.removeChild(judgeEl);
+				laneBTA.removeChild(judgeTextEl);
+			}, 500);
 			audioRes.tick1.currentTime = 0;
 			audioRes.tick1.play();
 			break;
 		case keyB:
 			laneBTB.appendChild(judgeEl);
 			laneBTB.appendChild(judgeTextEl);
-			setTimeout(() => { laneBTB.removeChild(judgeEl); laneBTB.removeChild(judgeTextEl); }, 500);
+			setTimeout(() => {
+				laneBTB.removeChild(judgeEl);
+				laneBTB.removeChild(judgeTextEl);
+			}, 500);
 			audioRes.tick1.currentTime = 0;
 			audioRes.tick1.play();
 			break;
 		case keyC:
 			laneBTC.appendChild(judgeEl);
 			laneBTC.appendChild(judgeTextEl);
-			setTimeout(() => { laneBTC.removeChild(judgeEl); laneBTC.removeChild(judgeTextEl); }, 500);
+			setTimeout(() => {
+				laneBTC.removeChild(judgeEl);
+				laneBTC.removeChild(judgeTextEl);
+			}, 500);
 			audioRes.tick1.currentTime = 0;
 			audioRes.tick1.play();
 			break;
 		case keyD:
 			laneBTD.appendChild(judgeEl);
 			laneBTD.appendChild(judgeTextEl);
-			setTimeout(() => { laneBTD.removeChild(judgeEl); laneBTD.removeChild(judgeTextEl); }, 500);
+			setTimeout(() => {
+				laneBTD.removeChild(judgeEl);
+				laneBTD.removeChild(judgeTextEl);
+			}, 500);
 			audioRes.tick1.currentTime = 0;
 			audioRes.tick1.play();
 			break;
 		case keyL:
 			laneFXL.appendChild(judgeEl);
 			laneFXL.appendChild(judgeTextEl);
-			setTimeout(() => { laneFXL.removeChild(judgeEl); laneFXL.removeChild(judgeTextEl); }, 500);
+			setTimeout(() => {
+				laneFXL.removeChild(judgeEl);
+				laneFXL.removeChild(judgeTextEl);
+			}, 500);
 			audioRes.tick2.currentTime = 0;
 			audioRes.tick2.play();
 			break;
 		case keyR:
 			laneFXR.appendChild(judgeEl);
 			laneFXR.appendChild(judgeTextEl);
-			setTimeout(() => { laneFXR.removeChild(judgeEl); laneFXR.removeChild(judgeTextEl); }, 500);
+			setTimeout(() => {
+				laneFXR.removeChild(judgeEl);
+				laneFXR.removeChild(judgeTextEl);
+			}, 500);
 			audioRes.tick2.currentTime = 0;
 			audioRes.tick2.play();
 			break;
@@ -255,10 +291,13 @@ function onKeyUp(ev) {
 function onPointerMove(ev) {
 	ev.preventDefault();
 	laserLVal = Math.max(0, Math.min(laserLVal + ev.movementX, 1000));
-	laserRVal = Math.max(0, Math.min(laserRVal + ev.movementY, 1000));
+	 laserRVal = Math.max(0, Math.min(laserRVal + ev.movementY, 1000));
+	//laserLVal = Math.max(0, Math.min(ev.clientX, 1000));
+	//laserRVal = Math.max(0, Math.min(ev.clientY, 1000));
 	// cursorL.style.left = `calc(${laserLVal / 10}% - 7.5vh)`
 	// cursorR.style.left = `calc(${laserRVal / 10}% - 7.5vh)`
 }
+
 function init() {
 	document.addEventListener('keydown', onKeyDown);
 	document.addEventListener('keyup', onKeyUp);
@@ -267,6 +306,17 @@ function init() {
 	updateCamera();
 }
 
+function full() {
+	// make the element go to full-screen mode
+	document.body.requestFullscreen()
+		.then(function () {
+			// element has entered fullscreen mode successfully
+			document.body.requestPointerLock();
+		})
+		.catch(function (error) {
+			// element could not enter fullscreen mode
+		});
+}
 init()
 
 /*
