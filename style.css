@@ -1,9 +1,9 @@
 :root {
-	--game-width: 90%;
-	--game-height: 80%;
+	--game-width: 75%;
+	--game-height: 75%;
 
-	--lane-width: 54vh;
-	--lane-height: 96vh;
+	--lane-width: 54%;
+	--lane-height: 96%;
 
 	--zIndex-lane: 0;
 	--zIndex-judge: 1;
@@ -12,7 +12,7 @@
 	--zIndex-Laser: 4;
 	--zIndex-judgeText: 5;
 	--zIndex-cursor: 6;
-	--camera-origin: center;
+	--camera-origin: center top;
 }
 
 body {

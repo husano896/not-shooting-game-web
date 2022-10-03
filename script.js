@@ -13,7 +13,7 @@ const laneFXL = document.querySelector('div.fx-l');
 const laneFXR = document.querySelector('div.fx-r');
 
 let laserLVal = 0;
-let laserRVal = 0;
+let laserRVal = 1000;
 
 const cameraEl = document.querySelector('.camera');
 
@@ -52,27 +52,27 @@ function getSlamHeight() {
 
 // 測試用旋鈕Note
 const test_laserNotes = [{
-		time: 0,
-		pos: 0.0,
-		isSlam: true
-	},
-	{
-		time: 1000,
-		pos: 1.0
-	},
-	{
-		time: 2000,
-		pos: 0.0
-	},
-	{
-		time: 3000,
-		pos: 1.0,
-		isSlam: true
-	},
-	{
-		time: 4000,
-		pos: 0.0
-	}
+	time: 0,
+	pos: 0.0,
+	isSlam: true
+},
+{
+	time: 1000,
+	pos: 1.0
+},
+{
+	time: 2000,
+	pos: 0.0
+},
+{
+	time: 3000,
+	pos: 1.0,
+	isSlam: true
+},
+{
+	time: 4000,
+	pos: 0.0
+}
 ]
 
 const els = test_laserNotes.map((note, index) => {
@@ -99,6 +99,13 @@ const els = test_laserNotes.map((note, index) => {
 	}
 });
 
+const nautica = {
+	fetch: ()=> {
+		fetch('https://ksm.dev/app/songs', {headers: {mode: 'no-cors'}})
+			.then(resp => resp.json())
+			.then(data => console.log(data));
+	}
+}
 
 class Note {
 	constructor(type) {
@@ -155,14 +162,14 @@ function update(delta) {
 	cursorR.setAttribute('state', laserRVal > 800 ? '' : 'miss')
 	window.requestAnimationFrame(update);
 	if (keypressed[keyVolLL]) {
-		laserLVal = Math.max(0, Math.min(laserLVal - 5, 1000));
+		laserLVal = Math.max(0, Math.min(laserLVal - 10, 1000));
 	} else if (keypressed[keyVolLR]) {
-		laserLVal = Math.max(0, Math.min(laserLVal + 5, 1000));
+		laserLVal = Math.max(0, Math.min(laserLVal + 10, 1000));
 	}
 	if (keypressed[keyVolRL]) {
-		laserRVal = Math.max(0, Math.min(laserRVal - 5, 1000));
+		laserRVal = Math.max(0, Math.min(laserRVal - 10, 1000));
 	} else if (keypressed[keyVolRR]) {
-		laserRVal = Math.max(0, Math.min(laserRVal + 5, 1000));
+		laserRVal = Math.max(0, Math.min(laserRVal + 10, 1000));
 	}
 	cursorL.style.left = `calc(${laserLVal / 10}% - 7.5vh)`
 	cursorR.style.left = `calc(${laserRVal / 10}% - 7.5vh)`
@@ -170,11 +177,20 @@ function update(delta) {
 	updateCamera();
 }
 
+
+function getTilt() {
+	const tilt = (laserLVal) - (1000 - laserRVal);
+	// console.log(tilt);
+	return tilt / 1000 * 30;
+}
+
 function updateCamera() {
 	cameraEl.style.perspective = `${perspective}px`;
 
 	/* rotateX越大, zoom-bottom越大 zoom-top越小*/
-	gameLane.style.transform = `rotateX(${rotateX}deg) rotateY(0deg) rotateZ(${rotateZ}deg)`;
+	/* rotateY為旋鈕導致的左右傾斜 */
+
+	gameLane.style.transform = `rotateX(${rotateX}deg) rotateY(0deg) rotateZ(${getTilt()}deg)`;
 }
 
 
@@ -194,6 +210,7 @@ function judgeKey(key) {
 				laneBTA.removeChild(judgeEl);
 				laneBTA.removeChild(judgeTextEl);
 			}, 500);
+			audioRes.tick1.pause();
 			audioRes.tick1.currentTime = 0;
 			audioRes.tick1.play();
 			break;
@@ -204,6 +221,7 @@ function judgeKey(key) {
 				laneBTB.removeChild(judgeEl);
 				laneBTB.removeChild(judgeTextEl);
 			}, 500);
+			audioRes.tick1.pause();
 			audioRes.tick1.currentTime = 0;
 			audioRes.tick1.play();
 			break;
@@ -214,6 +232,7 @@ function judgeKey(key) {
 				laneBTC.removeChild(judgeEl);
 				laneBTC.removeChild(judgeTextEl);
 			}, 500);
+			audioRes.tick1.pause();
 			audioRes.tick1.currentTime = 0;
 			audioRes.tick1.play();
 			break;
@@ -224,6 +243,7 @@ function judgeKey(key) {
 				laneBTD.removeChild(judgeEl);
 				laneBTD.removeChild(judgeTextEl);
 			}, 500);
+			audioRes.tick1.pause();
 			audioRes.tick1.currentTime = 0;
 			audioRes.tick1.play();
 			break;
@@ -234,6 +254,7 @@ function judgeKey(key) {
 				laneFXL.removeChild(judgeEl);
 				laneFXL.removeChild(judgeTextEl);
 			}, 500);
+			audioRes.tick2.pause();
 			audioRes.tick2.currentTime = 0;
 			audioRes.tick2.play();
 			break;
@@ -244,6 +265,7 @@ function judgeKey(key) {
 				laneFXR.removeChild(judgeEl);
 				laneFXR.removeChild(judgeTextEl);
 			}, 500);
+			audioRes.tick2.pause();
 			audioRes.tick2.currentTime = 0;
 			audioRes.tick2.play();
 			break;
@@ -290,18 +312,21 @@ function onKeyUp(ev) {
 
 function onPointerMove(ev) {
 	ev.preventDefault();
-	laserLVal = Math.max(0, Math.min(laserLVal + ev.movementX, 1000));
-	 laserRVal = Math.max(0, Math.min(laserRVal + ev.movementY, 1000));
-	//laserLVal = Math.max(0, Math.min(ev.clientX, 1000));
-	//laserRVal = Math.max(0, Math.min(ev.clientY, 1000));
-	// cursorL.style.left = `calc(${laserLVal / 10}% - 7.5vh)`
-	// cursorR.style.left = `calc(${laserRVal / 10}% - 7.5vh)`
+	console.log(ev);
+	// 全螢幕模式下還是會輸出movementXY！
+	// laserLVal = Math.max(0, Math.min(laserLVal + ev.movementX, 1000));
+	// laserRVal = Math.max(0, Math.min(laserRVal + ev.movementY, 1000));
+	laserLVal = Math.max(0, Math.min(ev.clientX, 1000));
+	laserRVal = Math.max(0, Math.min(ev.clientY, 1000));
+	cursorL.style.left = `calc(${laserLVal / 10}% - 7.5vh)`
+	cursorR.style.left = `calc(${laserRVal / 10}% - 7.5vh)`
 }
 
 function init() {
 	document.addEventListener('keydown', onKeyDown);
 	document.addEventListener('keyup', onKeyUp);
 	document.addEventListener('pointermove', onPointerMove);
+	document.addEventListener('touchmove', onPointerMove);
 	update();
 	updateCamera();
 }
@@ -325,10 +350,12 @@ setInterval(() => {
 }, 100)*/
 
 if ("serviceWorker" in navigator) {
-  window.addEventListener("load", function() {
-    navigator.serviceWorker
-      .register("/serviceworker.js")
-      .then(res => console.log("service worker registered"))
-      .catch(err => console.log("service worker not registered", err))
-  })
+	window.addEventListener("load", function () {
+		navigator.serviceWorker
+			.register("/serviceworker.js")
+			.then(res => console.log("service worker registered"))
+			.catch(err => console.log("service worker not registered", err))
+	})
 }
+
+nautica.fetch();
