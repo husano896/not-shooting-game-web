@@ -62,7 +62,8 @@
 		<label>rotateX</label>
 		<input type="range" min="0" max="90" value="10" oninput="rotateX = Number(this.value);updateCamera()">
 		<label>perspective</label>
-		<input type="range" min="0" max="256" value="128" oninput="perspective = Number(this.value);updateCamera()">
+		<input type="range" min="0" max="256" value="256" oninput="perspective = Number(this.value);updateCamera()">
+		<button onclick="full()">full</button>
 	</div>
 	<script src="script.js"></script>
 </body>

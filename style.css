@@ -11,7 +11,7 @@
 	--zIndex-BT: 3;
 	--zIndex-Laser: 4;
 	--zIndex-judgeText: 5;
-	
+	--zIndex-cursor: 6;
 	--camera-origin: center;
 }
 
@@ -56,6 +56,7 @@ body {
 	/* rotateX越大, zoom-bottom越大 zoom-top越小*/
 	display: flex;
 	flex-direction: row;
+	z-index: var(--zIndex-lane);
 }
 
 .lane-L {
@@ -85,16 +86,15 @@ body {
 	position: absolute;
 	left: 32px;
 	bottom: 0;
+	z-index: var(--zIndex-cursor);
 }
 
 .laser-cursor-l {
 	color: #50BDE8;
-	z-index: var(--zIndex-Laser);
 }
 
 .laser-cursor-r {
 	color: #ED5B5E;
-	z-index: var(--zIndex-Laser);
 }
 
 .notes,
@@ -192,8 +192,8 @@ body {
 
 
 .lane-judge {
-	animation-duration: 0.25s;
-	-webkit-animation-duration: 0.25s;
+	animation-duration: 0.1s;
+	-webkit-animation-duration: 0.1s;
 	animation-timing-function: cubic-bezier(0.075, 0.82, 0.165, 1);
 	-webkit-animation-timing-function: cubic-bezier(0.075, 0.82, 0.165, 1);
 	animation-delay: 0;
@@ -235,7 +235,7 @@ body {
 
 	position: absolute;
 	/* (B) 50% RADIUS = CIRCLE */
-	z-index: var(--zIndex-Laser);
+	z-index: var(--zIndex-judgeText);
 }
 
 .circleX {
