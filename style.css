@@ -1,6 +1,6 @@
 :root {
 	--game-width: 90%;
-	--game-height: 90%;
+	--game-height: 80%;
 
 	--lane-width: 54vh;
 	--lane-height: 96vh;
@@ -83,9 +83,8 @@ body {
 
 .laser-cursor {
 	position: absolute;
-	left: 0;
-	font-size: 15vh;
-	bottom: -7.5vh;
+	left: 32px;
+	bottom: 0;
 }
 
 .laser-cursor-l {
